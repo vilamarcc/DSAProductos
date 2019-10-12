@@ -1,41 +1,75 @@
-import java.util.LinkedList;
-import java.util.List;
-import java.util.HashMap;
-import org.apache.log4j.Logger;
+import java.util.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 public class GestorPedidosImp implements GestorPedidos{
-    List<Pedido> pedidosTotales;
-    HashMap<String, LinkedList<Pedido>> historialPedidos = new HashMap<String, LinkedList<Pedido>>();
+    private Queue<Pedido> pedidos;
+    private HashMap<String, User> users;
+    private List<Producto> productos;
 
-    public void realizarPedido(Pedido c){
-        pedidosTotales.add(c);
+    private static final Logger logger = LogManager.getLogger(GestorPedidosImp.class);
 
-        if(historialPedidos.get(c.getUsuario()) != null) {
-           LinkedList<Pedido> pedidosprevios =  historialPedidos.get(c.getUsuario());
-           pedidosprevios.add(c);
-           historialPedidos.remove(c.getUsuario());
-           historialPedidos.put(c.getUsuario(),pedidosprevios);
-        }
-        else if(historialPedidos.get(c.getUsuario()) == null){
-            LinkedList<Pedido> pedidonuevo = new LinkedList<Pedido>();
-            historialPedidos.put(c.getUsuario(),pedidonuevo);
-        }
+    public GestorPedidosImp() {
+       this.users = new HashMap<String, User>();
+       this.productos = new LinkedList<Producto>();
+       this.pedidos = new QueuesImpl<Pedido>(50);
+    }
+
+    public void encolarPedido(Pedido c) throws QueueFullException{
+        pedidos.push(c); //Simplemente añadimos a la cola el pedido que realiza un usuarlio
+        logger.info("Pedido de " + c.getUsuario() + " añadido");
     }
 
     public List<Pedido> pedidosUsuario(String iduser){
-        List<Pedido> pedidosuser =  historialPedidos.get(iduser);
-        return pedidosuser;
+         User user =  users.get(iduser);
+        return (user!=null? user.getListaPedidos(): null);
     }
 
     public List<Producto> productosordenadosventas(){
         return null;
     }
 
-    public void servirPedido(){
+    public void servirPedido() throws QueueEmptyException {
 
+        Pedido pedido = this.pedidos.pull();
+        Producto p;
+
+        for (Pedido.LP lp: pedido.getListaProductos()) {
+            p = consultaProducto(lp.getProducto());
+            p.updateVenta(lp.getCantidad());
+        }
+
+        User u = this.users.get(pedido.getUsuario());
+        u.addPedido(pedido);
+    }
+
+    private Producto consultaProducto(String producto) {
+        Producto p  = null;
+        int i = 0;
+        while ( i < this.productos.size()){
+
+            if(this.productos.get(i).getID().equals(producto)){
+                p = this.productos.get(i);
+            }
+            i++;
+        }
+        return p;
     }
 
     public List<Producto> productosordenadosPrecio(){
         return null;
+    }
+
+    public void addProducto(String n, double price){
+        Producto newp = new Producto(n,price);
+        this.productos.add(newp);
+        logger.info("Nuevo Producto: " + n + " ($"+ price + ")");
+    }
+
+    public void addUser(String Nombre,String Apellido) {
+        this.users.put(Nombre,new User(Nombre,Apellido));
+        logger.info("Nuevo Usuario: "+ Nombre + " " + Apellido);
+
     }
 }

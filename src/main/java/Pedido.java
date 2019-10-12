@@ -1,51 +1,56 @@
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Pedido {
     String usuario;
-    LinkedList<Producto> listaProductos; //Productos dentro del pedido
-    LinkedList<Integer> cantidadxproducto;
+    List<LP> lps; //Lista con las unidades por productos
     double precioT;
 
     public double getPrecioT() {
         return precioT;
     }
 
-    public LinkedList<Producto> getListaProductos() {
-        return listaProductos;
+    public List<LP> getListaProductos() {
+        return lps;
     }
 
     public String getUsuario() {
         return usuario;
     }
 
-    public void crearPedido(String nombre, Producto p,int numerop){
+    public Pedido(String nombre){
 
+        this.lps = new LinkedList<LP>();
         this.precioT = 0;
         this.usuario = nombre;
-        listaProductos.add(p);
-        int i = numerop;
-        double precio_2 = 0;
-        while (i > 0){
-            p.venta();
-            precio_2 = precio_2 + p.getPrecio();
-            i--;
-        }
-        cantidadxproducto.add(numerop);
-        this.precioT = this.precioT + precio_2;
+
     }
 
-    public void añadiraPedido(Producto p, int numerop){
-        listaProductos.add(p);
-        cantidadxproducto.add(numerop);
-        double precio_2 = 0;
-        int i = numerop;
-        while (i > 0){
-            p.venta();
-            precio_2 = precio_2 + p.getPrecio();
-            i--;
+
+    public void addLP(int q,String p){
+        LP lp = new LP(q, p);
+        lps.add(lp);
+    }
+
+
+
+    public class LP {
+        private int q;
+        private String producte; // Producte p;
+
+        public String getProducto() {
+            return this.producte;
         }
-        this.precioT = this.precioT + precio_2;
+
+        public int getCantidad() {
+            return this.q;
+        }
+
+        public  LP(int qu, String pro){
+            this.q = qu;
+            this.producte = pro;
+        }
     }
 }
