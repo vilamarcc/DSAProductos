@@ -1,6 +1,7 @@
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import java.util.*;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 
 public class GestorPedidosImp implements GestorPedidos{
@@ -8,7 +9,7 @@ public class GestorPedidosImp implements GestorPedidos{
     private HashMap<String, User> users;
     private List<Producto> productos;
 
-    private static final Logger logger = LogManager.getLogger(GestorPedidosImp.class);
+    private Logger logger = LogManager.getLogger(GestorPedidosImp.class);
 
     public GestorPedidosImp() {
        this.users = new HashMap<String, User>();
@@ -37,7 +38,9 @@ public class GestorPedidosImp implements GestorPedidos{
 
         for (Pedido.LP lp: pedido.getListaProductos()) {
             p = consultaProducto(lp.getProducto());
+            if (p==null) logger.warn("Producte"+lp.getProducto()+" no exiteix");
             p.updateVenta(lp.getCantidad());
+            pedido.updateLP(lp.getCantidad(),p.getPrecio());
         }
 
         User u = this.users.get(pedido.getUsuario());
@@ -71,5 +74,9 @@ public class GestorPedidosImp implements GestorPedidos{
         this.users.put(Nombre,new User(Nombre,Apellido));
         logger.info("Nuevo Usuario: "+ Nombre + " " + Apellido);
 
+    }
+
+    public List<Producto> getListaProductos(){
+        return this.productos;
     }
 }

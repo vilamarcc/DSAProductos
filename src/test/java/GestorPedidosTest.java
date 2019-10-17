@@ -1,8 +1,8 @@
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import java.util.List;
 
 public class GestorPedidosTest {
     GestorPedidos gestor;
@@ -22,16 +22,25 @@ public class GestorPedidosTest {
     }
 
     @Test
-    public void testEncolarPedido() throws QueueFullException {
-        Pedido p = new Pedido ("Toni");
-        p.addLP(3, "CocaCola");
-        p.addLP(1, "Barra Choco");
-        p.addLP(1, "Chapata");
+    public void testEncolarPedido() throws QueueFullException, QueueEmptyException{
+        Pedido p_1 = new Pedido ("Toni");
+        p_1.addLP(3, "CocaCola");
+        p_1.addLP(1, "Barra Choco");
+        p_1.addLP(1, "Chapata");
 
-        gestor.encolarPedido(p);
+        Pedido p_2 = new Pedido("Marc");
+        p_2.addLP(2,"Barra Choco");
+        p_2.addLP(5, "Chapata");
 
-        int i = 0;
+        gestor.encolarPedido(p_1);
+        gestor.encolarPedido(p_2);
+        gestor.servirPedido();
+        gestor.servirPedido();
+
+
     }
+
+
 
 
 }

@@ -1,5 +1,4 @@
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
 
 public class Producto {
     String ID;
@@ -28,8 +27,8 @@ public class Producto {
 
     //Metodos
 
-    public void updateVenta(int numVentas){
-        this.numVentas+= numVentas;
+    public void updateVenta(int numVenta){
+        this.numVentas+= numVenta;
     }
 
 }

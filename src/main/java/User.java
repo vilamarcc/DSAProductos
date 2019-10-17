@@ -1,3 +1,4 @@
+import java.util.LinkedList;
 import java.util.List;
 
 public class User {
@@ -16,5 +17,6 @@ public class User {
     public User(String n,String s){
         this.name = n;
         this.surname = s;
+        pedidoList = new LinkedList<Pedido>();
     }
 }

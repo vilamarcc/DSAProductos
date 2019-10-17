@@ -1,7 +1,6 @@
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
 
 public class Pedido {
     String usuario;
@@ -25,9 +24,11 @@ public class Pedido {
         this.lps = new LinkedList<LP>();
         this.precioT = 0;
         this.usuario = nombre;
-
     }
 
+    public void updateLP(int cantidad, double precio){
+        this.precioT +=cantidad*precio;
+    }
 
     public void addLP(int q,String p){
         LP lp = new LP(q, p);
